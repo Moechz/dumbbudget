@@ -1,7 +1,8 @@
 # ===========================================================================
 # DumbBudget for TerraMaster TOS 7 (Docker application)
 # ===========================================================================
-# Upstream image : moechz/dumbbudget:2026.11.14 (Docker Hub, used unmodified)
+# Upstream image : dumbwareio/dumbbudget:b9db5cb32d14b7b78675d8be054611d4829253ef
+#                  (Docker Hub, official multi-arch image, used unmodified)
 #                  -> https://github.com/DumbWareio/DumbBudget
 #
 # Ports   : host 8161 -> container 3000. The host port is in the
@@ -10,13 +11,19 @@
 # Volumes : all persistent data lives below
 #           /Volume1/DockerAppData/dumbbudgetdocker/. The /Volume* wildcard is
 #           deliberately NOT used: the platform does not expand it.
+#           The upstream app keeps its state in ./data relative to server.js;
+#           running from /data/app therefore stores transactions in
+#           /data/app/data/transactions.json inside this volume.
 # TOS rules honoured: Docker Hub image with a fixed tag (never ':latest'),
 #           container_name == application id, restart: unless-stopped,
 #           non-root user, no privileged mode, no network_mode: host, no
 #           cap_add, explicit TZ, a healthcheck on the only service, and
 #           x-app-meta as the last block.
-# Wrapper : the upstream image runs as root; the entrypoint below replaces
-#           it so the service can run as an unprivileged user.
+# Wrapper : the upstream image writes its generated PWA manifest and asset
+#           manifest into /app/public/assets on every start, which is read-only
+#           for the non-root user. The entrypoint below copies the application
+#           files (not node_modules) into the data volume and refreshes them on
+#           every start, so upgrades take effect while transactions survive.
 # Escaping: docker compose interpolates ${VAR}/$VAR in compose files, so any
 #           '$' meant for the shell is written '$$'.
 #
@@ -28,7 +35,7 @@
 
 services:
   dumbbudgetdocker:
-    image: moechz/dumbbudget:2026.11.14
+    image: dumbwareio/dumbbudget:b9db5cb32d14b7b78675d8be054611d4829253ef
     container_name: dumbbudgetdocker
     restart: unless-stopped
     user: "1000:1000"

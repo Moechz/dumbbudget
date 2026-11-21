@@ -1,9 +1,10 @@
 {
   "app_id": "dumbbudgetdocker",
   "title": "DumbBudget",
-  "image": "moechz/dumbbudget:2026.11.14",
+  "image": "dumbwareio/dumbbudget:b9db5cb32d14b7b78675d8be054611d4829253ef",
   "repo_name": "dumbbudget",
   "mode": "wrapper",
+  "entrypoint_file": "src/entrypoint.sh",
   "container_port": 3000,
   "category": [
     "Utilities"
@@ -19,53 +20,14 @@
   },
   "auth": "DumbWare",
   "upstream_url": "https://github.com/DumbWareio/DumbBudget",
-  "upstream_license": "MIT",
-  "descript": "DumbBudget is a dead-simple monthly budget tracker: enter income and expenses per category, see what is left, with support for multiple months and a PIN for the UI. This package runs the upstream image (mirrored to Docker Hub with a frozen tag by the maintainer) as a non-root container and keeps data in the application folder.",
-  "release_note": "1. First release.",
-  "important": "Open the web UI on port 8161 and start entering income, categories and expenses. Data lives in /Volume1/DockerAppData/dumbbudgetdocker/ and survives restarts and updates. The container runs as uid 1000; the application is copied into the data volume on first start so it can write its assets. Needs DockerEngine; configure a registry mirror if Docker Hub is unreachable. Back up the data folder before uninstalling with data removal. Plain HTTP on the LAN.",
-  "probe": {
-    "user_in_image": "nobody",
-    "entrypoint": null,
-    "cmd": [
-      "sh",
-      "start.sh",
-      "prd"
-    ],
-    "exposed_ports": [
-      8080
-    ],
-    "declared_volumes": [],
-    "image_healthcheck": [
-      "CMD-SHELL",
-      "python healthcheck.py"
-    ],
-    "digest": "daya0576/beaverhabits@sha256:6cd7e464207369785c88cfd59f99c6cc44ec57f3a8d90c3439908da42271d69f",
-    "architecture": "x86_64",
-    "platforms": [],
-    "http_client_in_image": "",
-    "trial_run": {
-      "ok": false,
-      "http_code": "",
-      "state": "exited",
-      "paths": [],
-      "host_port": 18000,
-      "log_tail": "21, in connect\n    await_only(connection),\n    ~~~~~~~~~~^^^^^^^^^^^^\n  File \"/opt/pysetup/.venv/lib/python3.14/site-packages/sqlalchemy/util/_concurrency_py3k.py\", line 132, in await_only\n    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^\n  File \"/opt/pysetup/.venv/lib/python3.14/site-packages/sqlalchemy/util/_concurrency_py3k.py\", line 196, in greenlet_spawn\n    value = await result\n            ^^^^^^^^^^^^\n  File \"/opt/pysetup/.venv/lib/python3.14/site-packages/aiosqlite/core.py\", line 168, in _connect\n    self._connection = await future\n                       ^^^^^^^^^^^^\n  File \"/opt/pysetup/.venv/lib/python3.14/site-packages/aiosqlite/core.py\", line 63, in _connection_worker_thread\n    result = function()\n  File \"/opt/pysetup/.venv/lib/python3.14/site-packages/aiosqlite/core.py\", line 466, in connector\n    return sqlite3.connect(loc, **kwargs)\n           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\nsqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unable to open database file\n(Background on this error at: https://sqlalche.me/e/20/e3q8)\n\n[2026-11-10 04:59:36 +0000] [11] [ERROR] Application startup failed. Exiting.\n[2026-11-10 04:59:36 +0000] [11] [INFO] Worker exiting (pid: 11)\n[2026-11-10 04:59:36 +0000] [9] [ERROR] Worker (pid:11) exited with code 3.\n[2026-11-10 04:59:36 +0000] [9] [ERROR] Shutting down: Master\n[2026-11-10 04:59:36 +0000] [9] [ERROR] Reason: Worker failed to boot.",
-      "files_in_mounts": ""
-    },
-    "docker_hub": {},
-    "github": {
-      "owner": "daya0576",
-      "repo": "beaverhabits",
-      "description": "A self-hosted habit tracking app without \"Goals\"",
-      "license": "BSD-3-Clause",
-      "homepage": "https://beaverhabits.com/demo"
-    }
-  },
+  "upstream_license": "GPL-3.0",
+  "descript": "DumbBudget is a small self-hosted budget tracker: record income and expenses with categories, see the running balance, filter by date range, sort by date or amount, and export to CSV or PDF. It supports recurring transactions, 24 currencies, a light/dark theme, an installable PWA and an optional PIN gate. This package runs the official upstream image as a non-root container and keeps your transactions in a single local JSON file: no account, no telemetry, no cloud service.",
+  "release_note": "2026.11.14-3 - review remediation: official multi-arch upstream image (aarch64 startup fixed), PRIVACY.md and NOTICE.md added, README completed, descriptions and data paths corrected, GPL-3.0 attribution. T1 upstream CVE retained with reason.",
+  "important": "Open http://<NAS-IP>:8161/. Set DUMBBUDGET_PIN in the container environment to require a PIN; without it the UI is open to your LAN. Transactions are saved in /Volume1/DockerAppData/dumbbudgetdocker/data/app/data/transactions.json and survive restarts and updates. PDF export loads jsPDF from cdnjs.cloudflare.com and needs internet; CSV works offline. Plain HTTP on the LAN - never expose port 8161 to the internet. Back up the data folder before uninstalling with data removal.",
   "healthcheck": [
     "CMD-SHELL",
     "wget -q -O /dev/null http://127.0.0.1:3000/ || exit 1"
   ],
-  "entrypoint_file": "specs/dumbbudget-entrypoint.sh",
   "platform": "x86_64",
   "user": "1000:1000",
   "publisher": "Moechz",
@@ -73,10 +35,10 @@
   "github_repo": "dumbbudget",
   "upstream_version": "2026.11.14",
   "release_tag_prefix": "v",
-  "version": "2026.11.14-1",
-  "help": "https://github.com/Moechz/dumbbudget/issues",
+  "version": "2026.11.14-3",
+  "help": "https://github.com/Moechz/dumbbudget/blob/main/PRIVACY.md",
   "official": "https://github.com/DumbWareio/DumbBudget",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "docker_socket": false,
   "group_add": [],
   "platforms": [
@@ -85,12 +47,14 @@
   ],
   "translations": {
     "zh-cn": {
-      "descript": "习惯打卡与连续天数统计，界面简洁。",
-      "important": "首次使用请打开网页完成初始化。数据保存在 DockerAppData/beaverhabitsdocker，重启和升级不会丢失。容器以 uid 1000 运行，挂载目录需对该用户可读。需要 DockerEngine；Docker Hub 不可达时先配置镜像加速。卸载并删除数据前请备份。局域网内为 HTTP。"
+      "descript": "DumbBudget 是一个自托管的简易记账应用：按类别记录收入与支出，实时查看余额，按日期范围筛选、按日期或金额排序，并可导出 CSV 或 PDF。支持周期性交易、24 种货币、浅色/深色主题、可安装为 PWA，以及可选的 PIN 访问保护。本包以非 root 容器运行官方上游镜像，交易数据保存在本机单个 JSON 文件中：无需账号，无遥测，也不经过云端。",
+      "important": "打开 http://<NAS-IP>:8161/。在容器环境中设置 DUMBBUDGET_PIN 可启用 PIN 保护；未设置时局域网内任何人都能打开界面。交易数据保存在 /Volume1/DockerAppData/dumbbudgetdocker/data/app/data/transactions.json，重启和升级后仍在。PDF 导出会从 cdnjs.cloudflare.com 加载 jsPDF，需要联网；CSV 导出可离线使用。局域网内为 HTTP，请勿将 8161 端口暴露到公网。卸载并删除数据前请备份。",
+      "release_note": "2026.11.14-3 — 审核整改：改用官方多架构上游镜像（修复 arm64 启动失败），新增隐私政策与许可证声明，补全 README，修正描述与数据路径，补充 GPL-3.0 署名；T1 上游 CVE 说明保留原因。"
     },
     "zh-hk": {
-      "descript": "习惯打卡与连续天数统计，界面简洁。",
-      "important": "首次使用請開啟網頁完成初始化。資料保存在 DockerAppData/beaverhabitsdocker，重新啟動和升級不會遺失。容器以 uid 1000 運行，掛載目錄需對該使用者可讀。需要 DockerEngine；Docker Hub 不可達時先設定鏡像加速。解除安裝並刪除資料前請備份。區域網路內為 HTTP。"
+      "descript": "DumbBudget 是一個自託管的簡易記帳應用：按類別記錄收入與支出，即時查看餘額，按日期範圍篩選、按日期或金額排序，並可匯出 CSV 或 PDF。支援週期性交易、24 種貨幣、淺色/深色主題、可安裝為 PWA，以及可選的 PIN 存取保護。本包以非 root 容器執行官方上游映像，交易資料保存在本機單一 JSON 檔案中：無需帳號，無遙測，也不經過雲端。",
+      "important": "開啟 http://<NAS-IP>:8161/。在容器環境中設定 DUMBBUDGET_PIN 可啟用 PIN 保護；未設定時區域網路內任何人都能開啟介面。交易資料保存在 /Volume1/DockerAppData/dumbbudgetdocker/data/app/data/transactions.json，重新啟動和升級後仍在。PDF 匯出會從 cdnjs.cloudflare.com 載入 jsPDF，需要連網；CSV 匯出可離線使用。區域網路內為 HTTP，請勿將 8161 連接埠暴露到公網。解除安裝並刪除資料前請備份。",
+      "release_note": "2026.11.14-3 — 審核整改：改用官方多架構上游映像（修復 arm64 啟動失敗），新增隱私政策與授權聲明，補全 README，修正描述與資料路徑，補充 GPL-3.0 署名；T1 上游 CVE 說明保留原因。"
     }
   },
   "host_port": 8161
